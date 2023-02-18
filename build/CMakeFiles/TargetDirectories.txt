@@ -1,0 +1,3 @@
+/home/scott/CppDev/SDLDev/SDLproject/build/CMakeFiles/rotateShape.dir
+/home/scott/CppDev/SDLDev/SDLproject/build/CMakeFiles/edit_cache.dir
+/home/scott/CppDev/SDLDev/SDLproject/build/CMakeFiles/rebuild_cache.dir

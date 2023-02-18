@@ -1,0 +1,1 @@
+/usr/bin/g++ -g -rdynamic CMakeFiles/TestProject.dir/src/test.cpp.o -o TestProject  -lSDL2main -lSDL2 

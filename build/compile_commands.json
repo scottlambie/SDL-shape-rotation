@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/scott/CppDev/SDLDev/SDLproject/build",
+  "command": "/usr/bin/g++   -g -o CMakeFiles/rotateShape.dir/src/rotateShape.cpp.o -c /home/scott/CppDev/SDLDev/SDLproject/src/rotateShape.cpp",
+  "file": "/home/scott/CppDev/SDLDev/SDLproject/src/rotateShape.cpp"
+}
+]
