@@ -27,6 +27,39 @@ void initSDL()
     SDL_SetRenderDrawColor(renderer,255,255,255,255); 
 }
 
+void renderObject(int x1, int y1, int x2, int y2)
+{
+    SDL_SetRenderDrawColor(renderer,255,255,255,255);
+    SDL_RenderDrawLine(renderer,x1,y1,x2,y2);
+    SDL_RenderPresent(renderer);
+}
+
+void renderObject(std::vector<edge> edges)
+{
+
+    //Draw X axis
+    SDL_SetRenderDrawColor(renderer,0,255,255,255);
+    SDL_RenderDrawLine(renderer,0,Y_CENTER,WINDOW_LENGTH,Y_CENTER);
+    //Draw Y axis
+    SDL_SetRenderDrawColor(renderer,255,0,255,255);
+    SDL_RenderDrawLine(renderer,X_CENTER,0,X_CENTER,WINDOW_HEIGHT);
+
+    //Draw shape from user-defined edges
+    SDL_SetRenderDrawColor(renderer,255,255,255,255);
+    for(auto &itr:edges)
+    {
+        float x1,x2,y1,y2;
+        x1 = itr.start.x+X_CENTER;
+        y1 = itr.start.y+Y_CENTER;
+        x2 = itr.end.x+X_CENTER;
+        y2 = itr.end.y+Y_CENTER;
+        SDL_RenderDrawLine(renderer,x1,y1,x2,y2);
+    }
+    SDL_RenderPresent(renderer);
+    SDL_SetRenderDrawColor(renderer,0,0,0,255);
+    SDL_Delay(10);
+}
+
 std::vector<edge> drawShape(std::vector<edge> edges)
 {
     std::vector<coord> coords;
@@ -56,16 +89,16 @@ std::vector<edge> drawShape(std::vector<edge> edges)
         z = stof(input);
         coords.push_back({x,y,z});
         edges.push_back({coords[0],coords[1]});
-        coords.clear();
         
         //Translate points to isometric view for reference
-        float isoX1 = (edges.back().start.x+X_CENTER)+(edges.back().start.z/2);
-        float isoY1 = (edges.back().start.y+Y_CENTER)+(edges.back().start.z/2);
-        float isoX2 = (edges.back().end.x+X_CENTER)+(edges.back().end.z/2);
-        float isoY2 = (edges.back().end.y+Y_CENTER)+(edges.back().end.z/2);
-        SDL_SetRenderDrawColor(renderer,255,255,255,255);
-        SDL_RenderDrawLine(renderer,isoX1,isoY1,isoX2,isoY2);
-        SDL_RenderPresent(renderer);
+        float x1 = (coords.at(0).x + X_CENTER) + (coords.at(0).z/2);
+        float y1 = (coords.at(0).y + Y_CENTER) + (coords.at(0).z/2);
+        float x2 = (coords.at(1).x + X_CENTER) + (coords.at(1).z/2);
+        float y2 = (coords.at(1).y + Y_CENTER) + (coords.at(1).z/2);
+        coords.clear();
+
+        renderObject(x1,y1,x2,y2);
+
         printf("\n'done' to finish:");
         std::cin >> input;
     }
@@ -83,11 +116,6 @@ void rotateVector(std::vector<edge> edges)
         SDL_RenderClear(renderer);
         //Find rotation of points by theta(rotation by 1 degree)
         std::vector<edge>::iterator itr = edges.begin();
-        /*for(auto &itr:edges)
-        {
-            std::cout << "1:X:" << itr.start.x << " Y:" << itr.start.y << "Z:" << itr.start.z;
-            std::cout << "\n2:X:" << itr.end.x << " Y:" << itr.end.y << "Z:" << itr.end.z << "\n";
-        }*/
         for(auto &itr:edges)
         {
             //TODO remove repetition
@@ -109,45 +137,15 @@ void rotateVector(std::vector<edge> edges)
             itr.end.z = itr.end.y*sinTheta + itr.end.z*cosTheta;
             itr.end.z = itr.end.z*cosTheta - itr.end.x*sinTheta;
         }   
-        //Draw X axis
-        SDL_SetRenderDrawColor(renderer,0,255,255,255);
-        SDL_RenderDrawLine(renderer,0,Y_CENTER,WINDOW_LENGTH,Y_CENTER);
-        //Draw Y axis
-        SDL_SetRenderDrawColor(renderer,255,0,255,255);
-        SDL_RenderDrawLine(renderer,X_CENTER,0,X_CENTER,WINDOW_HEIGHT);
-
-        //Draw shape from user-defined edges
-        SDL_SetRenderDrawColor(renderer,255,255,255,255);
-        for(auto &itr:edges)
-        {
-            float x1,x2,y1,y2;
-            x1 = itr.start.x+X_CENTER;
-            y1 = itr.start.y+Y_CENTER;
-            x2 = itr.end.x+X_CENTER;
-            y2 = itr.end.y+Y_CENTER;
-            SDL_RenderDrawLine(renderer,x1,y1,x2,y2);
-        }
-        SDL_RenderPresent(renderer);
-        SDL_SetRenderDrawColor(renderer,0,0,0,255);
-        SDL_Delay(10);
+        renderObject(edges);
     }
 }
 
 int main()
 {
     initSDL();
-    SDL_Event evt;
-    bool running = true;
-    while(running)
-    {
-        SDL_WaitEvent(&evt);
-        if(evt.type == SDL_QUIT)
-        {
-            running = false;
-        }
-        std::vector<edge> edges;
-        edges = drawShape(edges);
-        rotateVector(edges);
-    }
+    std::vector<edge> edges;
+    edges = drawShape(edges);
+    rotateVector(edges);
     return 0;
 }
